@@ -28,9 +28,6 @@ pipeline {
             steps {
                 // credentialsId 为你的Jenkins credentials 中添加的凭证
                 script{
-                    if ("${runOps}" == "GitHubPush") {
-                        branchName = branch - "refs/heads/"
-                    }
                     println("${branchName}")
                     checkout([$class: 'GitSCM', branches: [[name: "${branchName}"]], extensions: [], userRemoteConfigs: [[credentialsId: 'github_pass', url: "${github_url}"]]])
                 }

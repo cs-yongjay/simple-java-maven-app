@@ -1,8 +1,9 @@
+#!groovy
+
 // @ 后面指定版本分支
 @Library("ShareLibrary-Jenkins@main") _
 
 def build = new org.library.build()
-def deploy = new org.library.deploy()
 
 String buildShell = "${env.buildShell}"
 String buildType = "${env.buildType}"

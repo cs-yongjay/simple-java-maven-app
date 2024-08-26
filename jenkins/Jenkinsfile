@@ -1,29 +1,35 @@
+// @ 后面指定版本分支
+@Library("ShareLibrary-Jenkins@main") _
+
+def build = new org.library.build()
+def deploy = new org.library.deploy()
+
+String buildShell = "${env.buildShell}"
+String buildType = "${env.buildType}"
+String gitlab_url = "${env.gitlab_url}"
+String branchName = "${env.branchName}"
+
 pipeline {
     agent {
-        docker {
-            image 'maven:3.9.0'
-            args '-v /root/.m2:/root/.m2'
+        node {
+            label "build-1"
         }
     }
-    stages {
-        stage('Build') {
+    
+    stages{
+        stage("CheckOut") {
             steps {
-                sh 'mvn -B -DskipTests clean package'
-            }
-        }
-        stage('Test') {
-            steps {
-                sh 'mvn test'
-            }
-            post {
-                always {
-                    junit 'target/surefire-reports/*.xml'
+                // credentialsId 为你的Jenkins credentials 中添加的凭证
+                script{
+                    checkout([$class: 'GitSCM', branches: [[name: "${branchName}"]], extensions: [], userRemoteConfigs: [[credentialsId: 'github_pass', url: "${gitlab_url}"]]])
                 }
             }
         }
-        stage('Deliver') {
+        stage("Build") {
             steps {
-                sh './jenkins/scripts/deliver.sh'
+                script{
+                    build.Build(buildType, buildShell)
+                }
             }
         }
     }

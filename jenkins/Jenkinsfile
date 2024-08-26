@@ -23,6 +23,7 @@ pipeline {
                 // credentialsId 为你的Jenkins credentials 中添加的凭证
                 script{
                     checkout([$class: 'GitSCM', branches: [[name: "${branchName}"]], extensions: [], userRemoteConfigs: [[credentialsId: 'github_pass', url: "${github_url}"]]])
+                    println("${buildShell}")
                 }
             }
         }
